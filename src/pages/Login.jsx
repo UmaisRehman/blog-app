@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { loginUser } from "../config/firebase/firebasemethods";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
   const email = useRef();
@@ -27,11 +29,13 @@ function Login() {
       password: password.current.value,
     })
       .then(() => {
-        console.log("Logged in successfully");
+        toast.success("Logged in successfully!");
+        navigate("/");
       })
       .catch((err) => {
         console.error("Login failed:", err.message);
         setError("Login failed. Please check your credentials.");
+        toast.error("Login failed. Please try again.");
       });
   };
 
@@ -80,6 +84,7 @@ function Login() {
           </form>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

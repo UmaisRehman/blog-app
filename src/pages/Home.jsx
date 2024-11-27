@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { auth, getAllData } from "../config/firebase/firebasemethods";
 
 const Home = () => {
@@ -44,44 +44,71 @@ const Home = () => {
 
   return (
     <>
-      <h1 className='text-center mt-3 text-2xl'>All Blogs</h1>
+    <div className='bg-gray-100 pb-16'>
+      <div className="text-2xl text-center bg-white  font-extrabold ">
+        <h1 className=' p-5' >
+          ALL BLOGS
+        </h1>
+      </div>
 
-      {loading && <div className='h-[90vh] flex justify-center items-center'>
+
+      {loading && <div className='h-[90vh] flex justify-center items-center '>
         <span className="loading loading-spinner text-primary"></span>
       </div>}
 
       {error && <h1>Internal server error!</h1>}
 
-      <div className='flex justify-center flex-wrap gap-5 m-5'>
+      <div className='flex justify-center flex-wrap gap-5 mt-5'>
         {blogs && blogs.map((item, index) => {
           // Find the user data with the same uid from the fullname collection
           const user = fullnames?.find(fullname => fullname.uid === item.uid);
 
           return user ? (
-            <div key={item.documentId} className="border border-gray-400 card bg-base-100 w-96 shadow-xl">
+            <div key={item.documentId} className="border  border-gray-200 card bg-base-100 shadow-xl" style={{width: "881px"}}>
               <div className="card-body">
-                {/* Title and Description Styling */}
-                <div className="mb-4">
-                  <h2 className="card-title text-xl font-semibold text-gray-800">{item.title}</h2>
+                
+
+
+
+                <div className="  py-2  rounded-md">
+                  <div className="flex items-center gap-4 cursor-pointer" onClick={() => singleUserBlog(item)}>
+                    <img
+                      src="https://i.ibb.co/42YP27H/206855.png" 
+                      alt={user.Fullname}
+                      className="w-12 h-12 rounded-full"
+                    />
+                    <div className="flex flex-col">
+                    <h2 className="card-title text-xl font-semibold text-gray-800">{item.title}</h2>
+                      <h3 className="font-semibold text-lg text-blue-600"></h3>
+                      <p className="font-semibold text-gray-500">{user.Fullname} -{new Date(item.createdAt.seconds * 1000).toLocaleDateString()}</p>
+
+                    </div>
+                    
+                  </div>
+                   
+                </div>
+
+
+                <div className="mb-1">
+                  
                   <p className="text-gray-600">{item.description}</p>
                 </div>
 
                 {/* User Info Styling */}
-                <div className="mt-4 px-3 py-2 bg-gray-100 rounded-md">
-                  <h3 className="font-semibold text-lg text-blue-600">{user.Fullname}</h3>
-                  <p className="text-sm text-gray-500">Email: {user.email}</p>
+               
+                <div className="card-actions justify-end  ">
+                  <p className="text-sm text-primary hover " onClick={() => singleUserBlog(item)}>see all from this user</p> {/* Displaying formatted date */}
                 </div>
-
-                <div className="card-actions justify-end mt-3">
-                  <a className='text-primary' onClick={() => singleUserBlog(item)}>See all from this user</a>
-                </div>
+              
               </div>
             </div>
           ) : null;
         })}
       </div>
+      </div>
+      
     </>
-  )
+  );
 }
 
 export default Home;

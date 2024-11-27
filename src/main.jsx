@@ -9,6 +9,9 @@ import Dashboard from './pages/Dashboard';
 import Protectedroutes from './components/Protectedroutes';
 import Profile from './pages/Profile';
 import Userblogs from './pages/Userblogs';
+import { ToastContainer } from 'react-toastify';  // Import ToastContainer
+import 'react-toastify/dist/ReactToastify.css';   // Import the Toastify CSS
+
 
 const router = createBrowserRouter([
   {
@@ -44,5 +47,8 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')).render(
-  <RouterProvider router={router} />
+  <div>
+    <RouterProvider router={router} />
+    <ToastContainer /> {/* Global ToastContainer */}
+  </div>
 );

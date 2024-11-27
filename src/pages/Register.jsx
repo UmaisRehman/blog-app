@@ -3,7 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../config/firebase/config";
-import { collection,addDoc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Register() {
   const fullName = useRef();
@@ -14,53 +16,50 @@ function Register() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
 
-
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
   const register = async (e) => {
     e.preventDefault();
-    
+
     const passwordValue = password.current.value;
     const emailValue = email.current.value;
 
     // Check if passwords match
     if (passwordValue !== confirmPassword) {
       setError("Passwords do not match");
+      toast.error("Passwords do not match.");
       return;
-    }
-    try {
-     
-    } catch (error) {
-      console.log(error)
     }
     try {
       // Create a new user
       await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
-      console.log("User registered successfully");
-      navigate("/login");
+      toast.success("User registered successfully!");
 
-      
-      // store username deatils in firestore
-       addDoc(collection(db, "fullname"), {
+      // Store username details in Firestore
+      await addDoc(collection(db, "fullname"), {
         Fullname: fullName.current.value,
         email: email.current.value,
         uid: auth.currentUser.uid,
-      })
+      });
 
-
+      navigate("/login");
     } catch (error) {
       console.error("Error registering user:", error);
       // Handle specific Firebase errors
       if (error.code === "auth/email-already-in-use") {
         setError("Email is already in use. Please use a different email.");
+        toast.error("Email is already in use.");
       } else if (error.code === "auth/invalid-email") {
         setError("Invalid email format. Please check your email.");
+        toast.error("Invalid email format.");
       } else if (error.code === "auth/weak-password") {
         setError("Password is too weak. Please choose a stronger password.");
+        toast.error("Weak password.");
       } else {
         setError("Error registering user. Please try again.");
+        toast.error("Registration failed.");
       }
     }
   };
@@ -141,6 +140,7 @@ function Register() {
           </form>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }
